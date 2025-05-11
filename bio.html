@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Video with Large Scrolling Playlist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Noto Sans Khmer', 'Khmer OS', 'Battambang', Arial, sans-serif;
+      background: #fff;
+      color: #333;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* === Navbar - ORIGINAL as you gave === */
+    .navbar {
+      position: sticky;
+      top: 0;
+      background-color: #004080;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      height: 60px;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      flex-wrap: wrap;
+    }
+    .logo {
+      color: white;
+      font-weight: bold;
+      font-size: 1.5rem;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    nav {
+      flex-grow: 1;
+      margin-left: 30px;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+      white-space: nowrap;
+    }
+    nav a:hover,
+    nav a:focus {
+      background-color: #0066cc;
+      outline: none;
+    }
+    .search-container {
+      position: relative;
+      margin-left: 20px;
+      flex-shrink: 0;
+    }
+    .search-container input[type="text"] {
+      padding: 6px 30px 6px 10px;
+      border-radius: 4px;
+      border: none;
+      font-size: 1rem;
+      width: 180px;
+      transition: opacity 0.3s ease;
+    }
+    .search-container input[type="text"]:focus {
+      outline: 2px solid #99ccff;
+    }
+    .search-icon {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #004080;
+      font-size: 1.2rem;
+      user-select: none;
+    }
+    .cta-button {
+      background-color: #ff6600;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-left: 20px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .cta-button:hover,
+    .cta-button:focus {
+      background-color: #e65c00;
+      outline: none;
+    }
+    .menu-toggle {
+      display: none;
+      cursor: pointer;
+      font-size: 1.8rem;
+      color: white;
+      user-select: none;
+      margin-left: 20px;
+      flex-shrink: 0;
+    }
+    /* Navbar responsive */
+    @media (max-width: 768px) {
+      nav {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background-color: #004080;
+        display: none;
+        flex-direction: column;
+        padding: 10px 0;
+        z-index: 999;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      }
+      nav ul {
+        flex-direction: column;
+        gap: 0;
+      }
+      nav a {
+        padding: 12px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      nav a:last-child {
+        border-bottom: none;
+      }
+      nav.active {
+        display: flex;
+      }
+      .menu-toggle {
+        display: block;
+      }
+      .search-container {
+        order: 3;
+        width: 100%;
+        margin: 10px 0;
+      }
+      .search-container input[type="text"] {
+        width: 100%;
+      }
+      .cta-button {
+        order: 4;
+        width: 100%;
+        margin: 10px 0;
+        text-align: center;
+      }
+      .navbar {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px 20px;
+      }
+      .logo {
+        flex-grow: 1;
+      }
+    }
+
+    /* === Background and main content === */
+    .background-container {
+      min-height: 90vh;
+      background-image: url('bio.png');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      padding: 40px 0 0 0;
+      
+    }
+    .background-container::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.764);
+      z-index: 0;
+    }
+    .main-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 10px 0 10px;
+      flex-wrap: wrap;
+      font-family: 'Noto Sans Khmer', 'Khmer OS', 'Battambang', Arial, sans-serif;
+    }
+    .content-title {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #222;
+      margin-bottom: 24px;
+      z-index: 2;
+      background: transparent;
+      padding-top: 16px;
+    }
+
+    /* Video container */
+    .video-container {
+      background: #000;
+      border-radius: 18px;
+      box-shadow: 0 6px 20px rgba(53, 152, 251, 0.3);
+      overflow: hidden;
+      flex-shrink: 0;
+      width: 700px;
+      max-width: 90vw;
+      aspect-ratio: 16 / 9;
+      margin-top: 60px;
+      transition: box-shadow 0.3s ease;
+    }
+    .video-container:hover {
+      box-shadow: 0 10px 30px rgba(53, 152, 251, 0.5);
+    }
+    .video-container iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: none;
+      border-radius: 18px;
+    }
+
+    /* Playlist card */
+    .playlist-card {
+      background: #f7f9fc;
+      border-radius: 18px;
+      box-shadow: 0 6px 24px rgba(53, 152, 251, 0.15);
+      padding: 20px 24px;
+      width: 400px;
+      max-width: 95vw;
+      max-height: 600px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+    }
+
+    /* Search input inside playlist */
+    #playlist-search {
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1px solid #cbd5e1;
+      font-size: 1rem;
+      width: 100%;
+      margin-bottom: 12px;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+      transition: border-color 0.3s ease;
+    }
+    #playlist-search:focus {
+      outline: none;
+      border-color: #66a3ff;
+      box-shadow: 0 0 8px #66a3ff;
+    }
+
+    /* Playlist items */
+    .playlist-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 20px;
+      border-radius: 16px;
+      cursor: pointer;
+      background: white;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.07);
+      transition: background-color 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease;
+      outline-offset: 4px;
+      position: relative;
+    }
+    .playlist-item:hover,
+    .playlist-item:focus-visible {
+      background-color: #e6f0ff;
+      box-shadow: 0 8px 20px rgba(53, 152, 251, 0.3);
+      transform: translateY(-2px);
+      outline: none;
+    }
+    .playlist-item.active {
+      background-color: #cce4ff;
+      box-shadow: 0 10px 30px rgba(53, 152, 251, 0.4);
+      font-weight: 700;
+      color: #004080;
+      transform: translateY(-2px);
+    }
+
+    /* Playlist thumbnail */
+    .playlist-thumb {
+      width: 140px;
+      height: 80px;
+      border-radius: 14px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #ddd;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s ease;
+    }
+    .playlist-item:hover .playlist-thumb,
+    .playlist-item.active .playlist-thumb {
+      box-shadow: 0 6px 15px rgba(53, 152, 251, 0.3);
+    }
+
+    /* Playlist title */
+    .playlist-title {
+      font-size: 1.15rem;
+      color: #004080;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px;
+      user-select: none;
+    }
+
+    /* Watched progress dot */
+    .progress-dot {
+      position: absolute;
+      top: 14px;
+      right: 20px;
+      width: 14px;
+      height: 14px;
+      background-color: #4caf50;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #4caf50aa;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .playlist-item.watched .progress-dot {
+      opacity: 1;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 900px) {
+      .main-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 32px;
+      }
+      .video-container {
+        margin-top: 40px;
+      }
+      .playlist-card {
+        width: 98vw;
+        max-width: 98vw;
+        max-height: 350px;
+        padding: 16px 20px;
+      }
+    }
+    @media (max-width: 600px) {
+      .content-title {
+        font-size: 1.2rem;
+        padding-top: 8px;
+      }
+      .video-container {
+        width: 100vw;
+        border-radius: 0;
+      }
+      .playlist-card {
+        border-radius: 0;
+        max-height: 220px;
+        padding: 10px 10px;
+      }
+      .playlist-title {
+        font-size: 1rem;
+        max-width: 140px;
+      }
+      .playlist-thumb {
+        width: 110px;
+        height: 62px;
+      }
+      .background-container {
+              min-height: 80vh;
+
+
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar unchanged -->
+  <header class="navbar" role="banner" aria-label="Primary Navigation">
+    <a href="#" class="logo">TREAM12</a>
+    <span class="menu-toggle" aria-label="Toggle menu" tabindex="0">&#9776;</span>
+    <nav role="navigation" aria-label="Main menu" id="nav-menu">
+      <ul>
+        <li><a href="index.html" tabindex="0">Home</a></li>
+        <li><a href="document.html" tabindex="0">document</a></li>
+        <li><a href="resource.html" tabindex="0">Resources</a></li>
+        <li><a href="ABOUT.html" tabindex="0">About</a></li>
+        <li><a href="contacts.html" tabindex="0">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="search-container" aria-label="Site search">
+      <input type="text" id="search-input" placeholder="Search courses..." aria-label="Search courses" />
+      <span class="search-icon" role="button" tabindex="0" aria-pressed="false" aria-label="Toggle search input">&#128269;</span>
+    </div>
+    <button class="cta-button" aria-label="Enroll now">Enroll Now</button>
+  </header>
+
+  <!-- Background and main content -->
+  <div class="background-container">
+    <div class="content-title">
+      This text is on top of a slightly white faded background image.
+    </div>
+    <div class="main-content">
+      <div class="video-container" aria-label="Video player">
+        <iframe
+          id="main-video"
+          src="https://www.youtube.com/embed/GPxkTemrQ2w"
+          allowfullscreen
+          title="Main video player"
+        ></iframe>
+      </div>
+      <div class="playlist-card" id="playlist" aria-label="Video playlist">
+        <!-- Search input -->
+        <input
+          type="text"
+          id="playlist-search"
+          placeholder="Filter videos by title..."
+          aria-label="Filter videos by title"
+          autocomplete="off"
+        />
+
+        <!-- Playlist items -->
+        <div class="playlist-item active" data-video="GPxkTemrQ2w" tabindex="0" aria-current="true">
+          <img
+            class="playlist-thumb"
+            src="https://img.youtube.com/vi/GPxkTemrQ2w/hqdefault.jpg"
+            alt="Video 1 thumbnail"
+          />
+          <div class="playlist-title" title="Video Title djnxchsgdhchdbhcdhdbhdcbhdhhcbdhdgvhsddshgdshgsd1">
+            Video Title djnxchsgdhchdbhcdhdbhdcbhdhhcbdhdgvhsddshgdshgsd1
+          </div>
+          <span class="progress-dot" aria-label="Watched"></span>
+        </div>
+        <div class="playlist-item watched" data-video="dQw4w9WgXcQ" tabindex="0">
+          <img
+            class="playlist-thumb"
+            src="https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+            alt="Video 2 thumbnail"
+          />
+          <div class="playlist-title" title="Video Title 2">Video Title 2</div>
+          <span class="progress-dot" aria-label="Watched"></span>
+        </div>
+        <div class="playlist-item" data-video="3JZ_D3ELwOQ" tabindex="0">
+          <img
+            class="playlist-thumb"
+            src="https://img.youtube.com/vi/3JZ_D3ELwOQ/hqdefault.jpg"
+            alt="Video 3 thumbnail"
+          />
+          <div class="playlist-title" title="Video Title 3">Video Title 3</div>
+          <span class="progress-dot" aria-label="Watched"></span>
+        </div>
+        <div class="playlist-item" data-video="L_jWHffIx5E" tabindex="0">
+          <img
+            class="playlist-thumb"
+            src="https://img.youtube.com/vi/L_jWHffIx5E/hqdefault.jpg"
+            alt="Video 4 thumbnail"
+          />
+          <div class="playlist-title" title="Video Title 4">Video Title 4</div>
+          <span class="progress-dot" aria-label="Watched"></span>
+        </div>
+        <div class="playlist-item" data-video="2Vv-BfVoq4g" tabindex="0">
+          <img
+            class="playlist-thumb"
+            src="https://img.youtube.com/vi/2Vv-BfVoq4g/hqdefault.jpg"
+            alt="Video 5 thumbnail"
+          />
+          <div class="playlist-title" title="Video Title 5">Video Title 5</div>
+          <span class="progress-dot" aria-label="Watched"></span>
+        </div>
+        <div class="playlist-item" data-video="9bZkp7q19f0" tabindex="0">
+          <img
+            class="playlist-thumb"
+            src="https://img.youtube.com/vi/9bZkp7q19f0/hqdefault.jpg"
+            alt="Video 6 thumbnail"
+          />
+          <div class="playlist-title" title="Video Title 6">Video Title 6</div>
+          <span class="progress-dot" aria-label="Watched"></span>
+        </div>
+        <div class="playlist-item" data-video="fRh_vgS2dFE" tabindex="0">
+          <img
+            class="playlist-thumb"
+            src="https://img.youtube.com/vi/fRh_vgS2dFE/hqdefault.jpg"
+            alt="Video 7 thumbnail"
+          />
+          <div class="playlist-title" title="Video Title 7">Video Title 7</div>
+          <span class="progress-dot" aria-label="Watched"></span>
+        </div>
+        <div class="playlist-item" data-video="JGwWNGJdvx8" tabindex="0">
+          <img
+            class="playlist-thumb"
+            src="https://img.youtube.com/vi/JGwWNGJdvx8/hqdefault.jpg"
+            alt="Video 8 thumbnail"
+          />
+          <div class="playlist-title" title="Video Title 8">Video Title 8</div>
+          <span class="progress-dot" aria-label="Watched"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mobile menu toggle (if you have it)
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
+    menuToggle?.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
+    menuToggle?.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        navMenu.classList.toggle('active');
+      }
+    });
+
+    // Playlist video change logic
+    const playlistItems = document.querySelectorAll('.playlist-item');
+    const mainVideo = document.getElementById('main-video');
+    const searchInput = document.getElementById('playlist-search');
+
+    playlistItems.forEach(item => {
+      item.addEventListener('click', () => {
+        changeVideo(item);
+      });
+      item.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          changeVideo(item);
+        }
+      });
+    });
+
+    function changeVideo(selectedItem) {
+      playlistItems.forEach(i => {
+        i.classList.remove('active');
+        i.removeAttribute('aria-current');
+      });
+      selectedItem.classList.add('active');
+      selectedItem.setAttribute('aria-current', 'true');
+
+      const videoId = selectedItem.getAttribute('data-video');
+      mainVideo.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0`;
+
+      selectedItem.classList.add('watched');
+    }
+
+    // Search filter by prefix (startsWith)
+    searchInput.addEventListener('input', () => {
+      const filter = searchInput.value.trim().toLowerCase();
+      playlistItems.forEach(item => {
+        const title = item.querySelector('.playlist-title').textContent.toLowerCase();
+        if (title.startsWith(filter)) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

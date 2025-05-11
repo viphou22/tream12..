@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Digital Bookshelf</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer&display=swap" rel="stylesheet" />
+
+  <style>
+ * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Noto Sans Khmer', 'Khmer OS', 'Battambang', Arial, sans-serif;
+  background: #fff;
+  color: #333;
+}
+
+/* Navbar */
+.navbar {
+  position: sticky;
+  top: 0;
+  background-color: #004080;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 60px;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  flex-wrap: wrap;
+}
+.logo {
+  color: white;
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+nav {
+  flex-grow: 1;
+  margin-left: 30px;
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+}
+nav a:hover,
+nav a:focus {
+  background-color: #0066cc;
+  outline: none;
+}
+.search-container {
+  position: relative;
+  margin-left: 20px;
+  flex-shrink: 0;
+}
+.search-container input[type="text"] {
+  padding: 6px 30px 6px 10px;
+  border-radius: 4px;
+  border: none;
+  font-size: 1rem;
+  width: 180px;
+  transition: opacity 0.3s ease;
+}
+.search-container input[type="text"]:focus {
+  outline: 2px solid #99ccff;
+}
+.search-icon {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #004080;
+  font-size: 1.2rem;
+  user-select: none;
+}
+.cta-button {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 20px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.cta-button:hover,
+.cta-button:focus {
+  background-color: #e65c00;
+  outline: none;
+}
+.menu-toggle {
+  display: none;
+  cursor: pointer;
+  font-size: 1.8rem;
+  color: white;
+  user-select: none;
+  margin-left: 20px;
+  flex-shrink: 0;
+}
+
+/* Navbar responsive */
+@media (max-width: 768px) {
+  nav {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background-color: #004080;
+    display: none;
+    flex-direction: column;
+    padding: 10px 0;
+    z-index: 999;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  }
+  nav ul {
+    flex-direction: column;
+    gap: 0;
+  }
+  nav a {
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  nav a:last-child {
+    border-bottom: none;
+  }
+  nav.active {
+    display: flex;
+  }
+  .menu-toggle {
+    display: block;
+  }
+  .search-container {
+    order: 3;
+    width: 100%;
+    margin: 10px 0;
+  }
+  .search-container input[type="text"] {
+    width: 100%;
+  }
+  .cta-button {
+    order: 4;
+    width: 100%;
+    margin: 10px 0;
+    text-align: center;
+  }
+  .navbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 20px;
+  }
+  .logo {
+    flex-grow: 1;
+  }
+  
+}
+
+
+.section-title {
+  text-align: center;
+  color: #3498db;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+.bookshelf {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.book {
+  transition: transform 0.2s;
+}
+
+.book:hover {
+  transform: translateY(-8px) scale(1.05);
+}
+
+.book-cover {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+  border: 2px solid #e1e7ef;
+}
+
+.book-title {
+  margin-top: 0.8rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #222;
+  word-break: break-word;
+}
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 10px;
+  max-width: 900px;
+  width: 95vw;
+  max-height: 90vh;
+  padding: 1rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.close {
+  position: absolute;
+  top: 12px; right: 18px;
+  font-size: 2rem;
+  color: #888;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.modal-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+.download-btn {
+  background: #2980b9;
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: background 0.3s;
+  border: none;
+}
+
+.download-btn:hover {
+  background: #1c5980;
+}
+
+.pdf-viewer {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 60vh;
+}
+
+canvas {
+  max-width: 100%;
+  height: auto !important;
+  border-radius: 6px;
+  margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  .book { width: 120px; }
+  .book-cover { height: 160px; }
+  .modal-content { padding: 0.5rem; }
+
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  margin-left: 50px;
+  font-size: 1rem;
+  color: #2980b9;
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 2px solid #2980b9;
+  border-radius: 6px;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+  user-select: none;
+  cursor: pointer;
+}
+
+.back-link:hover,
+.back-link:focus {
+  background-color: #2980b9;
+  color: white;
+  outline: none;
+  box-shadow: 0 0 8px rgba(41, 128, 185, 0.7);
+}
+
+.back-link:active {
+  background-color: #1c5980;
+  border-color: #1c5980;
+  box-shadow: none;
+}
+.footer {
+  background-color: #004080; /* Your signature blue */
+  color: white;
+  padding: 30px 20px;
+  font-family: 'Noto Sans Khmer', Arial, sans-serif;
+}
+.footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.footer-logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+.footer-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+.footer-links a:hover,
+.footer-links a:focus {
+  color: #99ccff;
+  outline: none;
+  text-decoration: underline;
+}
+.footer-social {
+  display: flex;
+  gap: 15px;
+  font-size: 1.4rem;
+}
+.footer-social a {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.footer-social a:hover,
+.footer-social a:focus {
+  color: #99ccff;
+  outline: none;
+}
+.footer-copy {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #cce0ff;
+}
+
+@media (max-width: 600px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin: 0;
+  }
+  .footer-links a {
+    display: inline-block;
+    padding: 5px 10px;
+  }
+  .footer-social {
+    justify-content: center;
+  }
+}
+  </style>
+</head>
+<body>
+    <header class="navbar" role="banner" aria-label="Primary Navigation">
+        <a href="#" class="logo">TREAM12</a>
+        <span class="menu-toggle" aria-label="Toggle menu" tabindex="0">&#9776;</span>
+        <nav role="navigation" aria-label="Main menu" id="nav-menu">
+          <ul>
+                                    <li><a href="index.html" tabindex="0">Home</a></li>
+
+            <li><a href="document.html" tabindex="0">document</a></li>
+            <li><a href="resource.html" tabindex="0">Resources</a></li>
+            <li><a href="ABOUT.html" tabindex="0">About</a></li>
+            <li><a href="contacts.html" tabindex="0">Contact</a></li>
+          </ul>
+        </nav>
+      
+        <div class="search-container" aria-label="Site search">
+          <input type="text" id="search-input" placeholder="Search courses..." aria-label="Search courses" />
+          <span class="search-icon" role="button" tabindex="0" aria-pressed="false" aria-label="Toggle search input">&#128269;</span>
+        </div>
+        <button class="cta-button" aria-label="Enroll now">Enroll Now</button>
+      </header>
+  <h2 class="section-title">គណិតវិទ្យា</h2>
+  <div class="bookshelf" id="bookshelf"></div>
+  <a href="index.html" class="back-link" aria-label="Go back to homepage">
+    ← Back
+  </a>
+  <!-- Modal for PDF Reader -->
+  <div id="pdfModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <div class="modal-toolbar">
+        <a id="downloadBtn" href="#" download class="download-btn">⬇️ Download PDF</a>
+      </div>
+      <div id="pdfViewer" class="pdf-viewer"></div>
+    </div>
+    
+  </div>
+   
+  <div class="bookshelf" id="bookshelf">
+    
+  </div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+ <div class="footer" role="contentinfo">
+  <div class="footer-container">
+    <div class="footer-logo" aria-label="Logo"><center>TREAM12</center></div>
+    <div class="footer-social" aria-label="Social media links">
+      <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">📘</a>
+      <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter">🐦</a>
+      <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">📸</a>
+    </div>
+  </div>
+  <div class="footer-copy">
+    © 2025 TREAM12. សិទ្ធិគ្រប់យ៉ាងបានរក្សាទុក។
+  </div>
+</div>
+  
+
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.min.js"></script>
+  <script>// Book data (add more as needed)
+    const books = [
+      {
+        title: 'សៀវភៅ លីមីត',
+        cover: 'limit.png', // Your cover image path
+        pdf: 'limit.pdf'   // Your PDF file path
+      },
+      {
+        title: 'អាំងតេក្រាល',
+        cover: 'ang.png',
+        pdf: 'ang.pdf'
+      },
+      {
+        title: 'សមីការដឺផេរ៉ង់ស្យែល',
+        cover: 'equ.png',
+        pdf: 'equa.pdf'
+      },
+      {
+        title: 'សិក្សាអនុគមន៍',
+        cover: 'func1.png',
+        pdf: 'func.pdf'
+      },
+       
+     
+    ];
+    
+    // Render bookshelf
+    const bookshelf = document.getElementById('bookshelf');
+    books.forEach((book, idx) => {
+      const div = document.createElement('div');
+      div.className = 'book';
+      div.innerHTML = `
+        <img src="${book.cover}" alt="${book.title}" class="book-cover" />
+        <div class="book-title">${book.title}</div>
+      `;
+      div.addEventListener('click', () => openPDFModal(book));
+      bookshelf.appendChild(div);
+    });
+    
+    // PDF.js setup
+    let pdfDoc = null, pageNum = 1, scale = 1.2;
+    const pdfViewer = document.getElementById('pdfViewer');
+    const modal = document.getElementById('pdfModal');
+    const closeModal = document.getElementById('closeModal');
+    const downloadBtn = document.getElementById('downloadBtn');
+    
+    function openPDFModal(book) {
+      modal.style.display = 'flex';
+      downloadBtn.href = book.pdf;
+      downloadBtn.download = book.title + '.pdf';
+      loadPDF(book.pdf);
+    }
+    
+    closeModal.onclick = function() {
+      modal.style.display = 'none';
+      pdfViewer.innerHTML = '';
+      pdfDoc = null;
+    };
+    
+    window.onclick = function(event) {
+      if (event.target === modal) {
+        closeModal.onclick();
+      }
+    };
+    
+    // Load and render PDF
+    function loadPDF(url) {
+      pdfjsLib.getDocument(url).promise.then(function(pdf) {
+        pdfDoc = pdf;
+        pageNum = 1;
+        renderPage(pageNum);
+      });
+    }
+    
+    function renderPage(num) {
+      pdfDoc.getPage(num).then(function(page) {
+        const viewport = page.getViewport({ scale: scale });
+        pdfViewer.innerHTML = '';
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        pdfViewer.appendChild(canvas);
+    
+        page.render({ canvasContext: ctx, viewport: viewport });
+      });
+    }
+    const bookGroups = [
+  {
+    groupTitle: 'Physics Books - Group 1',
+    books: [
+      {
+        title: 'សៀវភៅ លីមីត',
+        cover: 'limit.png',
+        pdf: 'limit.pdf'
+      },
+      {
+        title: 'អាំងតេក្រាល',
+        cover: 'ang.png',
+        pdf: 'ang.pdf'
+      },
+      {
+        title: 'សមីការដឺផេរ៉ង់ស្យែល',
+        cover: 'equ.png',
+        pdf: 'equa.pdf'
+      },
+      {
+        title: 'សិក្សាអនុគមន៍',
+        cover: 'func1.png',
+        pdf: 'func.pdf'
+      }
+    ]
+  },
+  {
+    groupTitle: 'Physics Books - Group 2',
+    books: [
+      {
+        title: 'សិក្សាអនុគមន៍ (Duplicate 1)',
+        cover: 'func1.png',
+        pdf: 'func.pdf'
+      },
+      {
+        title: 'សិក្សាអនុគមន៍ (Duplicate 2)',
+        cover: 'func1.png',
+        pdf: 'func.pdf'
+      },
+      {
+        title: 'សមីការដឺផេរ៉ង់ស្យែល (Duplicate 1)',
+        cover: 'equ.png',
+        pdf: 'equa.pdf'
+      },
+      {
+        title: 'សមីការដឺផេរ៉ង់ស្យែល (Duplicate 2)',
+        cover: 'equ.png',
+        pdf: 'equa.pdf'
+      }
+    ]
+  }
+  // Add more groups if needed
+];
+const bookshelf1 = document.getElementById('bookshelf1');
+bookshelf1.innerHTML = ''; // clear existing content
+
+bookGroups.forEach(group => {
+  // Create group container
+  const groupDiv = document.createElement('div');
+  groupDiv.className = 'book-group';
+
+  // Add group title
+  const groupTitle = document.createElement('h3');
+  groupTitle.textContent = group.groupTitle;
+  groupTitle.style.color = '#3498db';
+  groupTitle.style.margin = '1.5rem 0 1rem';
+  groupTitle.style.textAlign = 'center';
+  groupDiv.appendChild(groupTitle);
+
+  // Container for books in this group
+  const groupBooksContainer = document.createElement('div');
+  groupBooksContainer.className = 'bookshelf1-group';
+  groupBooksContainer.style.display = 'flex';
+  groupBooksContainer.style.flexWrap = 'wrap';
+  groupBooksContainer.style.justifyContent = 'center';
+  groupBooksContainer.style.gap = '2rem';
+
+  // Add books
+  group.books.forEach(book => {
+    const div = document.createElement('div');
+    div.className = 'book';
+    div.style.cursor = 'pointer';
+    div.style.width = '160px';
+    div.style.textAlign = 'center';
+    div.style.transition = 'transform 0.2s';
+    div.innerHTML = `
+      <img src="${book.cover}" alt="${book.title}" class="book-cover" style="width:100%; height:220px; object-fit:cover; border-radius:8px; box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08); border: 2px solid #e1e7ef;" />
+      <div class="book-title" style="margin-top:0.8rem; font-size:1.1rem; font-weight:bold; color:#222; word-break:break-word;">${book.title}</div>
+    `;
+    div.addEventListener('click', () => openPDFModal(book));
+    div.addEventListener('mouseenter', () => div.style.transform = 'translateY(-8px) scale(1.05)');
+    div.addEventListener('mouseleave', () => div.style.transform = 'none');
+    groupBooksContainer.appendChild(div);
+  });
+
+  groupDiv.appendChild(groupBooksContainer);
+  bookshelf1.appendChild(groupDiv);
+});
+
+
+    </script>
+</body>
+</html>

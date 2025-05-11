@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ធនធាន - TREAM12</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer&display=swap" rel="stylesheet" />
+<style>
+  /* === Navbar styles from your code (keep exactly as is) === */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: 'Noto Sans Khmer', 'Khmer OS', 'Battambang', Arial, sans-serif;
+    background: #fff;
+    color: #333;
+  }
+  .navbar {
+    position: sticky;
+    top: 0;
+    background-color: #004080;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 60px;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
+  
+    
+  }
+  .logo {
+    color: white;
+    font-weight: bold;
+    font-size: 1.5rem;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  nav {
+    flex-grow: 1;
+    margin-left: 30px;
+  }
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+  }
+  nav a:hover,
+  nav a:focus {
+    background-color: #0066cc;
+    outline: none;
+  }
+  .search-container {
+    position: relative;
+    margin-left: 20px;
+    flex-shrink: 0;
+  }
+  .search-container input[type='text'] {
+    padding: 6px 30px 6px 10px;
+    border-radius: 4px;
+    border: none;
+    font-size: 1rem;
+    width: 180px;
+    transition: opacity 0.3s ease;
+  }
+  .search-container input[type='text']:focus {
+    outline: 2px solid #99ccff;
+  }
+  .search-icon {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #004080;
+    font-size: 1.2rem;
+    user-select: none;
+  }
+  .cta-button {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 20px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .cta-button:hover,
+  .cta-button:focus {
+    background-color: #e65c00;
+    outline: none;
+  }
+  .menu-toggle {
+    display: none;
+    cursor: pointer;
+    font-size: 1.8rem;
+    color: white;
+    user-select: none;
+    margin-left: 20px;
+    flex-shrink: 0;
+  }
+  @media (max-width: 768px) {
+    nav {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background-color: #004080;
+      display: none;
+      flex-direction: column;
+      padding: 10px 0;
+      z-index: 999;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    nav.active {
+      display: flex;
+    }
+    nav ul {
+      flex-direction: column;
+      gap: 0;
+    }
+    nav a {
+      padding: 12px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    nav a:last-child {
+      border-bottom: none;
+    }
+    .menu-toggle {
+      display: block;
+    }
+    .search-container {
+      order: 3;
+      width: 100%;
+      margin: 10px 0;
+    }
+    .search-container input[type='text'] {
+      width: 100%;
+    }
+    .cta-button {
+      order: 4;
+      width: 100%;
+      margin: 10px 0;
+      text-align: center;
+    }
+    .navbar {
+      flex-wrap: wrap;
+      height: auto;
+      padding: 10px 20px;
+    }
+    .logo {
+      flex-grow: 1;
+    }
+  }
+  main {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+  h1.page-title {
+    text-align: center;
+    color: #004080;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+  }
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .resource-card {
+    background: #f9fbff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(53, 152, 251, 0.15);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .resource-card:hover,
+  .resource-card:focus-within {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(53, 152, 251, 0.3);
+  }
+  .resource-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+  }
+  .resource-card h2 {
+    font-size: 1.3rem;
+    color: #004080;
+    margin-bottom: 10px;
+  }
+  .resource-card p {
+    flex-grow: 1;
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;
+  }
+  .resource-card a {
+    align-self: flex-start;
+    background-color: #3598fb;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  .resource-card a:hover,
+  .resource-card a:focus {
+    background-color: #2a7cd6;
+    outline: none;
+  }
+  /* Responsive tweaks */
+  @media (max-width: 480px) {
+    h1.page-title {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+<header class="navbar" role="banner" aria-label="Primary Navigation">
+  <a href="#" class="logo">TREAM12</a>
+  <span class="menu-toggle" aria-label="Toggle menu" tabindex="0">&#9776;</span>
+  <nav role="navigation" aria-label="Main menu" id="nav-menu">
+    <ul>
+      <li><a href="index.html" tabindex="0">Home</a></li>
+      <li><a href="document.html" tabindex="0">document</a></li>
+      <li><a href="resource.html" tabindex="0">Resources</a></li>
+      <li><a href="ABOUT.html" tabindex="0">About</a></li>
+      <li><a href="contacts.html" tabindex="0">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="search-container" aria-label="Site search">
+    <input
+      type="text"
+      id="search-input"
+      placeholder="ស្វែងរកមុខវិជ្ជា..."
+      aria-label="ស្វែងរកមុខវិជ្ជា"
+    />
+    <span
+      class="search-icon"
+      role="button"
+      tabindex="0"
+      aria-pressed="false"
+      aria-label="Toggle search input"
+      >&#128269;</span
+    >
+  </div>
+  <button class="cta-button" aria-label="Enroll now">ចុះឈ្មោះឥឡូវនេះ</button>
+</header>
+
+<main>
+  <h1 class="page-title">ធនធានមុខវិជ្ជា ថ្នាក់ទី ១២</h1>
+  <section class="resource-grid" aria-label="បញ្ជីធនធានមុខវិជ្ជា">
+    <article class="resource-card" tabindex="0">
+      <img src="math.png" alt="រូបភាពមុខវិជ្ជាគណិតវិទ្យា" />
+      <h2>គណិតវិទ្យា</h2>
+      <p>សិក្សាអំពីគន្លឹះគណិតវិទ្យា ដូចជា អាល់ហ្សេប្រា កាឡូស និងត្រីកោណមាត្រ។</p>
+      <a href="#" aria-label="មើលព័ត៌មានលម្អិតអំពីមុខវិជ្ជាគណិតវិទ្យា">ស្វែងយល់បន្ថែម</a>
+    </article>
+    <article class="resource-card" tabindex="0">
+      <img src="physic.png" alt="រូបភាពមុខវិជ្ជារូបវិទ្យា" />
+      <h2>រូបវិទ្យា</h2>
+      <p>សិក្សាអំពីមូលដ្ឋាននៃរូបវិទ្យា ដូចជា ចលនា អគ្គិសនី និងថាមពល។</p>
+      <a href="#" aria-label="មើលព័ត៌មានលម្អិតអំពីមុខវិជ្ជារូបវិទ្យា">ស្វែងយល់បន្ថែម</a>
+    </article>
+    <article class="resource-card" tabindex="0">
+      <img src="chemist.png" alt="រូបភាពមុខវិជ្ជាគីមីវិទ្យា" />
+      <h2>គីមីវិទ្យា</h2>
+      <p>សិក្សាអំពីសារធាតុ និងប្រតិកម្មគីមីក្នុងជីវិត និងបរិស្ថាន។</p>
+      <a href="#" aria-label="មើលព័ត៌មានលម្អិតអំពីមុខវិជ្ជាគីមីវិទ្យា">ស្វែងយល់បន្ថែម</a>
+    </article>
+    <article class="resource-card" tabindex="0">
+      <img src="bio.png" alt="រូបភាពមុខវិជ្ជាជីវវិទ្យា" />
+      <h2>ជីវវិទ្យា</h2>
+      <p>សិក្សាអំពីរបៀបដំណើរការរបស់សារពាង្គកាយ និងប្រព័ន្ធជីវៈផ្សេងៗ។</p>
+      <a href="#" aria-label="មើលព័ត៌មានលម្អិតអំពីមុខវិជ្ជាជីវវិទ្យា">ស្វែងយល់បន្ថែម</a>
+    </article>
+  </section>
+</main>
+
+<script>
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navMenu = document.getElementById('nav-menu');
+
+  menuToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('active');
+  });
+
+  menuToggle.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      navMenu.classList.toggle('active');
+    }
+  });
+</script>
+</body>
+</html>
